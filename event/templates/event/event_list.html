@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event List</title>
+</head>
+<body>
+    {% if user.is_authenticated %}
+        <p>Welcome, {{ user.username }}!</p>
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
+        <h1>Event List</h1>
+        {% for event in events %}
+            <a href="{% url 'event_detail' pk=event.pk %}">
+                <div>
+                    <h2>{{ event.name }}</h2>
+                    <h2>{{ event.organizer }}</h2>
+                    <h2>{{ event.in_charge }}</h2>
+                </div>
+            </a>
+        {% endfor %}
+        <a href="{% url 'create_event' %}">➕ Add New Event</a>
+    {% else %}
+        <p>You need to <a href="{% url 'login' %}">login</a> to view this page.</p>
+    {% endif %}
+</body>
+</html>

@@ -1,0 +1,65 @@
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
+from django.shortcuts import redirect, render, get_object_or_404
+from .models import Event
+from .forms import EventForm, EventStatusForm
+
+@login_required
+def event_list(request):
+    events = Event.objects.all()
+    return render(request, 'event/event_list.html', {'events': events})
+
+@login_required
+def event_detail(request, pk):
+    event = get_object_or_404(Event, pk=pk)
+    return render(request, 'event/event_detail.html', {'event': event})
+
+@login_required
+def create_event(request):
+    if request.method == "POST":
+        form = EventForm(request.POST)
+        if form.is_valid():
+            event = form.save(commit=False)
+            event.in_charge = request.user
+            event.status = 'Pending'
+            event.save()
+            redirect('event_detail', pk=event.pk)
+    else:
+        form = EventForm()
+
+    return render(request, 'event/create_form.html', {'form': form})
+
+
+@login_required
+def edit_event(request, pk):
+    event = get_object_or_404(Event, pk=pk)
+    if event.in_charge != request.user and not request.user.groups.filter(name='Event Editors').exists():
+        return redirect('event_list')
+
+    if request.method == "POST":
+        if request.user.groups.filter(name='Event Editors').exists():
+            form = EventStatusForm(request.POST, instance=event)
+        else:
+            form = EventForm(request.POST, instance=event)
+        if form.is_valid():
+            form.save()
+            return redirect('event_detail', pk=event.pk)
+    else:
+        if request.user.groups.filter(name='Event Editors').exists():
+            form = EventStatusForm(instance=event)
+        else:
+            form = EventForm(instance=event)
+    return render(request, 'event/edit_form.html', {'form': form, 'event': event})
+
+@login_required
+def delete_post(request, pk):
+    event = get_object_or_404(Event, pk=pk)
+
+    if event.in_charge != request.user:  # Restrict deletion to the author
+        return HttpResponseForbidden("You are not allowed to delete this post.")
+
+    if request.method == "POST":
+        event.delete()
+        return redirect('event_list')
+
+    return render(request, 'event/delete_event.html', {'event': event})

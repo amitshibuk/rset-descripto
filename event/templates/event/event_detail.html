@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ event.name }}</title>
+</head>
+<body>
+    <a href="{% url 'event_list' %}">← Back to Home</a>
+    <h1>{{ event.name }}</h1>
+    <h2>{{ event.organizer }}</h2>
+    <h4>Date: {{ event.start_date }} to {{ event.end_date }}</h4>
+    <p>{{ event.description }}</p>
+
+    <h4>Venue: {{ event.venue }}</h4>
+
+    <small>Status: {{ event.status }}</small>
+    <br>
+
+    {% if event.in_charge == user %}
+        <a href="{% url 'edit_event' pk=event.pk %}">Edit Event</a>
+        <a href="{% url 'delete_event' pk=event.pk %}">Delete</a>
+    {% endif %}
+    <br>
+    <a href="{% url 'event_list' %}">Back to Event List</a>
+</body>
+</html>
