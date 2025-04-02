@@ -1,25 +1,53 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>{{ event.name }}</title>
-</head>
-<body>
+{% extends 'event\base.html' %}
+
+{% block title %} {{ event.name }} {% endblock %}
+{% block content %}
     <a href="{% url 'event_list' %}">← Back to Home</a>
-    <h1>{{ event.name }}</h1>
-    <h2>{{ event.organizer }}</h2>
-    <h4>Date: {{ event.start_date }} to {{ event.end_date }}</h4>
-    <p>{{ event.description }}</p>
+    
+    <div class="flex flex-col">
+        <div class="flex flex-col bg-gray-100 p-4 m-2 rounded-lg w-3/5 mx-auto">
+            <h3>{{ event.event_id }}</h3>
+            <h1 class="text-3xl font-bold text-center">{{ event.name }}</h1>
+                <div class="flex justify-between">
+                    <div class="flex flex-col">
+                        <h2>Organizer: <span class="font-bold">{{ event.organizer }}</span></h2>
+                        <h2>In-Charge: <span class="font-bold">{{ event.in_charge }}</span></h2>
+                    </div>
 
-    <h4>Venue: {{ event.venue }}</h4>
+                    <div>
+                        <h2>Date: <span class="font-bold">{{ event.start_date }} to {{ event.end_date }}</span></h2>
+                        <h2>Venue: <span class="font-bold">{{ event.venue }}</span></h2>
+                    </div>
+                </div>
 
-    <small>Status: {{ event.status }}</small>
-    <br>
+                <h2>Description:</h2>
+                <p>{{ event.description }}</p><br>
 
-    {% if event.in_charge == user %}
-        <a href="{% url 'edit_event' pk=event.pk %}">Edit Event</a>
-        <a href="{% url 'delete_event' pk=event.pk %}">Delete</a>
-    {% endif %}
-    <br>
-    <a href="{% url 'event_list' %}">Back to Event List</a>
-</body>
-</html>
+                <h4>Venue: <span class="font-bold">{{ event.venue }}</span></h4>
+
+                <h1 class="text-3xl font-bold text-center">Status: {{ event.status }}</h1>
+                <br>
+        </div>
+        <div>
+            <div class="flex justify-center gap-4">
+            {% if event.in_charge == user %}
+                <a href="{% url 'edit_event' pk=event.pk %}" class="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded">Edit Event</a>
+                <a href="{% url 'delete_event' pk=event.pk %}" class="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded">Delete</a>
+            {% endif %}
+            </div>
+            {% load group_tags %}
+
+            {% if user|has_group:"Moderators" %}
+            <form action="{% url 'approve_event' pk=event.pk %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit">Approve</button>
+            </form>
+            <form action="{% url 'reject_event' pk=event.pk %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit">Reject</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+
+    {% endblock %}

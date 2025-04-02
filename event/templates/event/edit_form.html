@@ -1,11 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Event</title>
-</head>
-<body>
+{% extends 'event\base.html' %}
+
+{% block title %} {{ event.name }} Edit {% endblock %}
+{% block content %}
     <h1>Edit Event</h1>
     <form method="post">
         {% csrf_token %}
@@ -13,5 +9,5 @@
         <button type="submit">Save changes</button>
     </form>
     <a href="{% url 'event_detail' pk=event.pk %}">Cancel</a>
-</body>
-</html>
+
+{% endblock %}

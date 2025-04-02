@@ -1,19 +1,63 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Event</title>
-</head>
-<body>
-    <h1>CREATE EVENT</h1>
-    <form method="POST">
-        {% csrf_token %} 
-        {{ form.as_p }} 
-        <button type="submit">Submit</button>
+{% extends 'event/base.html' %}
+
+{% load form_tags %}
+
+{% block title %}Create Event{% endblock %}
+
+{% block content %}
+    <h1 class="text-2xl font-bold text-center mb-4">Create Event</h1>
+    <form method="POST" class="w-3/4 mx-auto bg-gray-100 p-6 rounded-lg shadow-md">
+        {% csrf_token %}
+        
+        <div class="mb-4">
+            <label for="id_name" class="block text-gray-700 font-bold mb-2">Event Name:</label>
+            {{ form.name|add_class:"w-full p-2 border border-gray-300 rounded" }}
+        </div>
+
+        <div class="mb-4">
+            <label for="id_start_date" class="block text-gray-700 font-bold mb-2">Start Date:</label>
+            {{ form.start_date|add_class:"w-full p-2 border border-gray-300 rounded" }}
+        </div>
+
+        <div class="mb-4">
+            <label for="id_end_date" class="block text-gray-700 font-bold mb-2">End Date:</label>
+            {{ form.end_date|add_class:"w-full p-2 border border-gray-300 rounded" }}
+        </div>
+
+        <div class="mb-4">
+            <label for="id_time" class="block text-gray-700 font-bold mb-2">Time:</label>
+            {{ form.time|add_class:"w-full p-2 border border-gray-300 rounded" }}
+        </div>
+
+        <div class="mb-4">
+            <label for="id_description" class="block text-gray-700 font-bold mb-2">Description:</label>
+            {{ form.description|add_class:"w-full p-2 border border-gray-300 rounded" }}
+        </div>
+
+        <div class="mb-4">
+            <label for="id_organizer" class="block text-gray-700 font-bold mb-2">Organizer:</label>
+            {{ form.organizer|add_class:"w-full p-2 border border-gray-300 rounded" }}
+        </div>
+
+        <div class="mb-4">
+            <label for="id_max_count" class="block text-gray-700 font-bold mb-2">Maximum Participants:</label>
+            {{ form.max_count|add_class:"w-full p-2 border border-gray-300 rounded" }}
+        </div>
+
+        <div class="mb-4">
+            <label for="id_budget" class="block text-gray-700 font-bold mb-2">Budget:</label>
+            {{ form.budget|add_class:"w-full p-2 border border-gray-300 rounded" }}
+        </div>
+
+        <div class="mb-4">
+            <label for="id_venue" class="block text-gray-700 font-bold mb-2">Venue:</label>
+            {{ form.venue|add_class:"w-full p-2 border border-gray-300 rounded" }}
+        </div>
+
+        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Submit
+        </button>
     </form>
 
-    <a href="{% url 'event_list' %}">← Back to Home</a>
-    
-</body>
-</html>
+    <a href="{% url 'event_list' %}" class="block text-center mt-4 text-blue-500 hover:underline">← Back to Home</a>
+{% endblock %}

@@ -6,7 +6,7 @@ from .forms import EventForm, EventStatusForm
 
 @login_required
 def event_list(request):
-    events = Event.objects.all()
+    events = Event.objects.all().order_by('-event_id')
     return render(request, 'event/event_list.html', {'events': events})
 
 @login_required
@@ -23,12 +23,11 @@ def create_event(request):
             event.in_charge = request.user
             event.status = 'Pending'
             event.save()
-            redirect('event_detail', pk=event.pk)
+            return redirect('event_detail', pk=event.pk)
     else:
         form = EventForm()
 
     return render(request, 'event/create_form.html', {'form': form})
-
 
 @login_required
 def edit_event(request, pk):
@@ -63,3 +62,19 @@ def delete_post(request, pk):
         return redirect('event_list')
 
     return render(request, 'event/delete_event.html', {'event': event})
+
+@login_required
+def approve_event(request, pk):
+    event = get_object_or_404(Event, pk=pk)
+    if request.user.groups.filter(name='Moderators').exists():
+        event.status = "Approved"
+        event.save()
+    return redirect('event_detail', pk=pk)
+
+@login_required
+def reject_event(request, pk):
+    event = get_object_or_404(Event, pk=pk)
+    if request.user.groups.filter(name='Moderators').exists():
+        event.status = "Rejected"
+        event.save()
+    return redirect('event_detail', pk=pk)
