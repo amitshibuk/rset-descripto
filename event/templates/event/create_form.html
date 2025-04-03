@@ -5,7 +5,7 @@
 {% block title %}Create Event{% endblock %}
 
 {% block content %}
-    <h1 class="text-2xl font-bold text-center mb-4">Create Event</h1>
+    <h1 class="text-3xl font-bold text-center mb-4 mt-2">Create Event</h1>
     <form method="POST" class="w-3/4 mx-auto bg-gray-100 p-6 rounded-lg shadow-md">
         {% csrf_token %}
         
@@ -57,7 +57,7 @@
         <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
             Submit
         </button>
-    </form>
 
-    <a href="{% url 'event_list' %}" class="block text-center mt-4 text-blue-500 hover:underline">← Back to Home</a>
+        <a href="{% url 'event_list' %}" class="font-bold bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded">Cancel</a>
+    </form>
 {% endblock %}

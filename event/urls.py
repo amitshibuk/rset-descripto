@@ -9,5 +9,6 @@ urlpatterns = [
     path('event/<int:pk>/delete/', views.delete_post, name='delete_event'),
     path('event/<int:pk>/approve/', views.approve_event, name='approve_event'),
     path('event/<int:pk>/reject/', views.reject_event, name='reject_event'),
+    path('event/<int:pk>/update/', views.update_event, name='update_event'),
 
 ]

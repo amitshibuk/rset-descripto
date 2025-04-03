@@ -1,0 +1,46 @@
+{% extends 'event\base.html' %}
+{% load form_tags %}
+{% block title %} {{ event.name }} Update {% endblock %}
+{% block content %}
+    <h1>Update Event</h1>
+
+    <form method="post" class="w-3/4 mx-auto bg-gray-100 p-6 rounded-lg shadow-md">
+        {% csrf_token %}
+        
+        <div class="mb-4">
+           <p class="text-3xl text-center">Event: <b> {{ event.name }} </b></p>
+        </div>
+
+        <div class="mb-4">
+            <label for="id_report_detail" class="block text-gray-700 font-bold mb-2">Report:</label>
+            {{ form.report_details|add_class:"w-full p-2 border border-gray-300 rounded" }}
+        </div>
+
+        <div class="mb-4">
+            <label for="id_feedback" class="block text-gray-700 font-bold mb-2">Feedback:</label>
+            {{ form.feedback_text|add_class:"w-full p-2 border border-gray-300 rounded" }}
+        </div>
+
+        <div class="mb-4">
+            <label for="id_rating" class="block text-gray-700 font-bold mb-2">Rating:</label>
+            {{ form.rating|add_class:"w-full p-2 border border-gray-300 rounded" }}
+        </div>
+
+        <div class="mb-4">
+            <label for="id_participation" class="block text-gray-700 font-bold mb-2">Participation:</label>
+            {{ form.participant_count|add_class:"w-full p-2 border border-gray-300 rounded" }}
+        </div>
+
+        <div class="mb-4">
+            <label for="id_image" class="block text-gray-700 font-bold mb-2">Image:</label>
+            {{ form.image|add_class:"w-full p-2 border border-gray-300 rounded" }}
+        </div>
+
+        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Update Event
+        </button>
+
+        <a href="{% url 'event_detail' pk=event.pk %}" class="font-bold bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded">Cancel</a>
+    </form>
+
+{% endblock %}

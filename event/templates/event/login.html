@@ -1,16 +1,166 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Login - Rset Descripto</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* About Us Section */
+        .about-section {
+            flex: 1;
+            background: #1f2937;  /* Green background */
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 50px;
+            animation: fadeIn 1.2s ease-in-out;
+        }
+
+        .about-section h1 {
+            font-size: 40px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .about-section p {
+            font-size: 18px;
+            max-width: 500px;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        /* Login Section */
+        .login-section {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f4f4f4;
+        }
+
+        .login-container {
+            background: white;
+            padding: 35px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            width: 80%;
+            max-width: 400px;
+            animation: slideIn 1s ease-in-out;
+        }
+
+        .login-container h1 {
+            margin-bottom: 20px;
+            font-size: 30px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        input {
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color:#1f2937;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: 0.3s;
+            font-weight: 500;
+        }
+
+        button:hover {
+            background-color: rgb(52, 52, 113);
+            transform: scale(1.05);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+
+            .about-section {
+                padding: 30px;
+            }
+
+            .about-section h1 {
+                font-size: 30px;
+            }
+
+            .about-section p {
+                font-size: 16px;
+            }
+
+            .login-container {
+                width: 90%;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+    </style>
 </head>
 <body>
-    <h1>Login</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Login</button>
-    </form>
+
+    <!-- About Us Section -->
+    <div class="about-section">
+        <h1>Welcome to Rset Descripto.</h1>
+        <p>
+            Rset Descripto is a powerful event management system designed to simplify event planning and approval workflows. 
+            With seamless communication and AI-powered insights, our platform makes event coordination effortless, efficient, and stress-free.
+        </p>
+    </div>
+
+    <!-- Login Section -->
+    <div class="login-section">
+        <div class="login-container">
+            <h1>Login</h1>
+            <form method="post">
+                {% csrf_token %}
+                <input type="text" name="username" placeholder="Username" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <button type="submit">Login</button>
+            </form>
+        </div>
+    </div>
+
 </body>
 </html>
