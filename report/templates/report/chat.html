@@ -1,0 +1,62 @@
+{% extends 'event/base.html' %}
+
+{% block title %}Chat{% endblock %}
+
+{% block content %}
+<div class="w-3/5 mx-auto mt-10 bg-gray-100 p-6 rounded-lg shadow-md">
+    <h1 class="text-2xl font-bold text-center mb-4">Chat</h1>
+    <div id="chat-box" class="h-96 overflow-y-auto bg-white p-4 rounded-lg border border-gray-300">
+        <!-- Chat messages will appear here -->
+    </div>
+    <form id="chat-form" class="mt-4">
+        <textarea id="chat-input" class="w-full p-2 border border-gray-300 rounded" rows="3" placeholder="Type your message..."></textarea>
+        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded mt-2">Send</button>
+    </form>
+</div>
+
+<script>
+    const chatForm = document.getElementById("chat-form");
+    const chatInput = document.getElementById("chat-input");
+    const chatBox = document.getElementById("chat-box");
+
+    chatForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const userMessage = chatInput.value.trim();
+        if (!userMessage) return;
+
+        // Display the user's message
+        const userMessageDiv = document.createElement("div");
+        userMessageDiv.className = "text-right mb-2";
+        userMessageDiv.innerHTML = `<span class="bg-blue-500 text-white px-4 py-2 rounded inline-block">${userMessage}</span>`;
+        chatBox.appendChild(userMessageDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        // Clear the input
+        chatInput.value = "";
+
+        // Send the message to the server
+        try {
+            const response = await fetch("{% url 'chat' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}",
+                },
+                body: JSON.stringify({ prompt: userMessage }),
+            });
+
+            const data = await response.json();
+
+            // Display the server's reply
+            const botMessageDiv = document.createElement("div");
+            botMessageDiv.className = "text-left mb-2";
+            botMessageDiv.innerHTML = `<span class="bg-gray-300 text-black px-4 py-2 rounded inline-block">${data.reply}</span>`;
+            chatBox.appendChild(botMessageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    });
+</script>
+{% endblock %}

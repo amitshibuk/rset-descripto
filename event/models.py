@@ -5,7 +5,8 @@ class Event(models.Model):
     STATUS_CHOICES = [
         ('Pending', 'Pending'),
         ('Approved', 'Approved'),
-        ('Rejected', 'Rejected')
+        ('Rejected', 'Rejected'),
+        ('Closed', 'Closed'),
     ]
     
     event_id = models.AutoField(primary_key=True)

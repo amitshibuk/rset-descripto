@@ -4,7 +4,7 @@
 {% block content %}
     <h1>Update Event</h1>
 
-    <form method="post" class="w-3/4 mx-auto bg-gray-100 p-6 rounded-lg shadow-md">
+    <form method="post" enctype="multipart/form-data" class="w-3/4 mx-auto bg-gray-100 p-6 rounded-lg shadow-md">
         {% csrf_token %}
         
         <div class="mb-4">

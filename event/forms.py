@@ -21,7 +21,7 @@ class EventStatusForm(forms.ModelForm):
 class EventUpdateForm(forms.ModelForm):
     class Meta:
         model = EventDetails
-        fields = ("event", "report_details", "feedback_text", "rating", "participant_count", "image")
+        fields = ["report_details", "feedback_text", "rating", "participant_count", "image"]
 
         report_details = forms.FileField(required=False)
         feedback_text = forms.FileField(required=False)

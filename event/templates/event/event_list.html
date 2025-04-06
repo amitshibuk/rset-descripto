@@ -16,6 +16,7 @@
                         <option value="Approved" {% if request.GET.status == "Approved" %}selected{% endif %}>Approved</option>
                         <option value="Rejected" {% if request.GET.status == "Rejected" %}selected{% endif %}>Rejected</option>
                         <option value="Pending" {% if request.GET.status == "Pending" %}selected{% endif %}>Pending</option>
+                        <option value="Closed" {% if request.GET.status == "Closed" %}selected{% endif %}>Closed</option>
                     </select>
                 </div>
 
@@ -45,7 +46,7 @@
                     </div>
                     <div class="flex flex-col">
                         <h2>Organizer: <span class="font-bold">{{ event.organizer }}</span></h2>
-                        <h2>In-Charge: <span class="font-bold">{{ event.in_charge }}</span></h2>
+                        <h2>In-Charge: <span class="font-bold">{{ event.in_charge.first_name }}</span></h2>
                     </div>
                 </div>
             </div>
@@ -64,6 +65,16 @@
         <div class="fixed bottom-[100px] left-[20px] w-auto bg-blue-900 text-white p-4 rounded-3xl hover:shadow-xl transition-shadow duration-300 z-50">
             ➕ Add New Event
         </div></a>
+
+        <a href="{% url 'chat' %}">
+            <div class="fixed bottom-[100px] right-[20px] w-auto bg-green-900 text-white p-4 rounded-3xl hover:shadow-xl transition-shadow duration-300 z-50">
+                Chat
+            </div></a>
+
+        <a href="{% url 'report' %}">
+            <div class="fixed bottom-[170px] right-[20px] w-auto bg-orange-900 text-white p-4 rounded-3xl hover:shadow-xl transition-shadow duration-300 z-50">
+                Report
+            </div></a>
     {% else %}
         <p>You need to <a href="{% url 'login' %}">login</a> to view this page.</p>
     {% endif %}
