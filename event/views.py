@@ -126,6 +126,12 @@ def send_event_files(request, pk):
     # Collect all files from EventDetails
     files = {}
     files['event'] = event.name
+    files['oraganizer'] = event.organizer
+    files['incharge'] = event.in_charge.first_name
+    files['budget'] = str(event.budget)
+    files['description'] = event.description
+
+
     if event_details.report_details:
         files['report_details'] = event_details.report_details.file
     if event_details.feedback_text:
@@ -136,7 +142,7 @@ def send_event_files(request, pk):
         files['participant_count'] = event_details.participant_count.file
 
     # Target server URL
-    target_url = "https://webhook.site/62f55e3d-cacb-489a-ab8d-6693ebe17248"  # Replace with the actual API endpoint
+    target_url = "http://127.0.0.1:5000/extract_text"  # Replace with the actual API endpoint
 
     # Send the POST request with the files
     try:

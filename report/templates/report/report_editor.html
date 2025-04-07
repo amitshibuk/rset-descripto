@@ -1,6 +1,6 @@
 {% extends 'event/base.html' %}
 
-{% block title %}Chat{% endblock %}
+{% block title %}Report Gen{% endblock %}
 
 {% load static %}
 
@@ -17,13 +17,9 @@
     }
   </style>
 
+  <div class="flex flex-col items-center max-w-xl mx-auto p-4">
   <!-- Prompt + Actions -->
-  <div id="prompt-bar" class="bg-gray-200 p-4 rounded-lg shadow-md m-5">
-    <input type="text" id="prompt-input" class="w-full p-2 border border-gray-300 rounded mb-2" placeholder="Enter a prompt...">
-    <button onclick="generateText()" class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded">Generate</button>
-    <button onclick="downloadPDF()" class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded">Download PDF</button>
-  </div>
-
+  
   <!-- CKEditor Instance -->
   <div class="bg-gray-200 p-4 rounded-lg shadow-md m-5">
     <div id="editor-container">
@@ -31,6 +27,14 @@
     </div>
   </div>
 
+  <div id="prompt-bar" class=" p-4 ">
+    <input type="text" id="prompt-input" class="w-full p-2 border border-gray-300 rounded mb-2" placeholder="Enter a prompt...">
+    <button onclick="generateText()" class="bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white p-4 rounded-lg text-white px-4 py-2 rounded">Generate ✨</button>
+    <button onclick="downloadPDF()" class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded">Download PDF</button>
+  </div>
+
+  </div>
+  
   <!-- Hidden iframe for print-to-PDF -->
   <iframe id="pdf-frame"></iframe>
 
@@ -98,7 +102,7 @@
       
         const header = `
           <div id="pdf-header">
-            <img src="static/images/logo.png" alt="Logo" style="height: 30px; vertical-align: middle; margin-right: 10px;">
+            <img src="${window.location.origin}/static/report/logo.png" alt="Logo" style="height: 30px; vertical-align: middle; margin-right: 10px;">
             <span style="font-size: 14px; font-weight: bold;">| Event Report</span>
           </div>
         `;
