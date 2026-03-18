@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-idy9lz!&-&#0vflllfn596c5n3b7sthb11irr$pauvh9l&6#96
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -100,6 +100,10 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://rsetdescripto.loophole.site",
 ]
 
 
