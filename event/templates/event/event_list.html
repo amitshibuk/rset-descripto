@@ -3,81 +3,130 @@
 {% block title %} Home {% endblock %}
 {% block content %}
     {% if user.is_authenticated %}
-        <h1 class="text-3xl font-bold text-center p-3">Event List</h1>
+        <div class="mb-8 text-center sm:text-left">
+            <h1 class="text-3xl sm:text-4xl font-bold text-slate-800">Event Dashboard</h1>
+            <p class="text-slate-500 mt-2 font-medium">Manage and monitor all your events in one place.</p>
+        </div>
 
         <!--FILTER FORM-->
-        <form method="get" class="w-3/5 mx-auto mb-6 bg-gray-100 p-4 rounded-lg">
-            <div class="flex gap-4">
-                <!-- Status Filter -->
-                <div class="flex flex-col w-1/2">
-                    <label for="status" class="block text-gray-700 font-bold mb-2">Filter by Status:</label>
-                    <select name="status" id="status" class="w-full p-2 border border-gray-300 rounded">
-                        <option value="">All</option>
-                        <option value="Approved" {% if request.GET.status == "Approved" %}selected{% endif %}>Approved</option>
-                        <option value="Rejected" {% if request.GET.status == "Rejected" %}selected{% endif %}>Rejected</option>
-                        <option value="Pending" {% if request.GET.status == "Pending" %}selected{% endif %}>Pending</option>
-                        <option value="Closed" {% if request.GET.status == "Closed" %}selected{% endif %}>Closed</option>
-                    </select>
-                </div>
-
-                <!-- Organizer Filter -->
-                <div class="flex flex-col w-1/2">
-                    <label for="organizer" class="block text-gray-700 font-bold mb-2">Filter by Organizer:</label>
-                    <input type="text" name="organizer" id="organizer" value="{{ request.GET.organizer }}" placeholder="Enter organizer name" class="w-full p-2 border border-gray-300 rounded">
-                </div>
+        <form method="get" class="mb-8 bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row gap-4 items-end">
+            <div class="flex-1 w-full">
+                <label for="status" class="block text-sm font-semibold text-slate-700 mb-1.5 ml-1">Status</label>
+                <select name="status" id="status" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-brand-500/15 focus:border-brand-500 transition-all outline-none font-medium text-slate-700 cursor-pointer">
+                    <option value="">All Statuses</option>
+                    <option value="Approved" {% if request.GET.status == "Approved" %}selected{% endif %}>Approved</option>
+                    <option value="Rejected" {% if request.GET.status == "Rejected" %}selected{% endif %}>Rejected</option>
+                    <option value="Pending" {% if request.GET.status == "Pending" %}selected{% endif %}>Pending</option>
+                    <option value="Closed" {% if request.GET.status == "Closed" %}selected{% endif %}>Closed</option>
+                </select>
             </div>
 
-            <div class="flex justify-end mt-4">
-                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded">Filter</button>
-                <a href="{% url 'event_list' %}" class="ml-4 bg-gray-500 hover:bg-gray-700 text-white px-4 py-2 rounded">Reset</a>
+            <div class="flex-1 w-full">
+                <label for="organizer" class="block text-sm font-semibold text-slate-700 mb-1.5 ml-1">Organizer</label>
+                <input type="text" name="organizer" id="organizer" value="{{ request.GET.organizer }}" placeholder="Search organizer..." class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-brand-500/15 focus:border-brand-500 transition-all outline-none font-medium placeholder:text-slate-400 placeholder:font-normal">
+            </div>
+
+            <div class="flex items-center gap-3 w-full md:w-auto mt-4 md:mt-0">
+                <button type="submit" class="flex-1 md:flex-none bg-brand-600 hover:bg-brand-700 text-white px-6 py-2.5 rounded-xl font-semibold shadow-md shadow-brand-600/20 active:scale-95 transition-all">
+                    Filter
+                </button>
+                <a href="{% url 'event_list' %}" class="flex-1 md:flex-none bg-slate-100 hover:bg-slate-200 text-slate-700 px-6 py-2.5 rounded-xl font-semibold text-center active:scale-95 transition-all">
+                    Reset
+                </a>
             </div>
         </form>
 
         <!--EVENT LIST-->
-        {% for event in events %}
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {% for event in events %}
+            <a href="{% url 'event_detail' pk=event.pk %}" class="group block">
+                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 h-full flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="flex gap-3 items-center">
+                                <span class="flex items-center justify-center w-10 h-10 rounded-full bg-brand-50 text-brand-600 font-bold text-sm">#{{ event.event_id }}</span>
+                                <h2 class="text-xl font-bold text-slate-800 group-hover:text-brand-600 transition-colors">{{ event.name }}</h2>
+                            </div>
+                            <!-- Status Badge Mockup (Ideally driven by DB, but here's a default styling base) -->
+                            {% if event.status == 'Approved' %}
+                                <span class="px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700">Approved</span>
+                            {% elif event.status == 'Rejected' %}
+                                <span class="px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-700">Rejected</span>
+                            {% elif event.status == 'Pending' %}
+                                <span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-700">Pending</span>
+                            {% elif event.status == 'Closed' %}
+                                <span class="px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600">Closed</span>
+                            {% else %}
+                                <span class="px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600">{{ event.status|default:"Active" }}</span>
+                            {% endif %}
+                        </div>
 
-        <div class="m-2">
-        <a href="{% url 'event_detail' pk=event.pk %}">
-
-        <div class="flex justify-between bg-white p-4 rounded-lg hover:shadow-lg transition-shadow duration-300 w-3/5 mx-auto inline-block">
-            <div>
-                <div>
-                    <div class="flex gap-4">
-                        <h1 class="text-xl">{{ event.event_id }}.</h1>
-                        <h1 class="text-xl font-bold">{{ event.name }}</h1>
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Organizer</p>
+                                <p class="text-sm font-medium text-slate-700">{{ event.organizer }}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">In-Charge</p>
+                                <p class="text-sm font-medium text-slate-700">{{ event.in_charge.first_name }}</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="flex flex-col">
-                        <h2>Organizer: <span class="font-bold">{{ event.organizer }}</span></h2>
-                        <h2>In-Charge: <span class="font-bold">{{ event.in_charge.first_name }}</span></h2>
+                    
+                    <div class="border-t border-slate-100 pt-4 flex justify-between items-center text-sm">
+                        <div class="flex items-center gap-2 text-slate-600">
+                            <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            <span class="font-medium">{{ event.start_date }}</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-slate-600">
+                            <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.243-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            <span class="font-medium">{{ event.venue|truncatechars:15 }}</span>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="mt-6">
-                <h2>Date: <span class="font-bold">{{ event.start_date }}</span></h2>
-                <h2>Venue: <span class="font-bold">{{ event.venue }}</span></h2>
-            </div>
+            </a>
+            {% empty %}
+                <div class="col-span-full py-20 text-center">
+                    <div class="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-10 h-10 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-700 mb-2">No Events Found</h3>
+                    <p class="text-slate-500">Try adjusting your filters or create a new event to get started.</p>
+                </div>
+            {% endfor %}
         </div>
-            </a></div>
 
-        {% empty %}
-        <p class="text-4xl font-bold text-center">No Events Found.</p>
-        {% endfor %}
+        <!-- FLOATING ACTION BUTTONS -->
+        <div class="fixed bottom-8 right-8 flex flex-col items-end gap-4 z-50">
+            <!-- Report -->
+            <a href="{% url 'report' %}" class="group flex items-center gap-3">
+                <span class="bg-slate-800 text-white text-xs font-bold px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-sm pointer-events-none translate-x-2 group-hover:translate-x-0">Generate Report</span>
+                <div class="w-14 h-14 bg-rose-500 text-white rounded-full flex items-center justify-center shadow-lg shadow-rose-500/30 hover:bg-rose-600 hover:scale-105 active:scale-95 transition-all">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                </div>
+            </a>
+            
+            <!-- Chat -->
+            <a href="{% url 'chat' %}" class="group flex items-center gap-3">
+                <span class="bg-slate-800 text-white text-xs font-bold px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-sm pointer-events-none translate-x-2 group-hover:translate-x-0">AI Assistant</span>
+                <div class="w-14 h-14 bg-indigo-500 text-white rounded-full flex items-center justify-center shadow-lg shadow-indigo-500/30 hover:bg-indigo-600 hover:scale-105 active:scale-95 transition-all">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+                </div>
+            </a>
 
-        <a href="{% url 'create_event' %}">
-        <div class="fixed bottom-[100px] left-[20px] w-auto bg-blue-900 text-white p-4 rounded-3xl hover:shadow-xl transition-shadow duration-300 z-50 ">
-            ➕ Add New Event
-        </div></a>
-
-        <a href="{% url 'chat' %}">
-            <div class="fixed bottom-[100px] right-[20px] font-bold w-auto bg-gradient-to-r from-yellow-400 to-blue-500 text-white p-4 rounded-3xl hover:shadow-xl transition-shadow duration-300 z-50">
-                Chat 💬
-            </div></a>
-
-        <a href="{% url 'report' %}">
-            <div class="fixed bottom-[170px] right-[20px] font-bold w-auto px-8 py-4 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white text-white rounded-3xl hover:shadow-xl transition-shadow duration-300 z-50">
-                Report ✨
-            </div></a>
+            <!-- Add Event -->
+            <a href="{% url 'create_event' %}" class="group flex items-center gap-3">
+                <span class="bg-slate-800 text-white text-xs font-bold px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-sm pointer-events-none translate-x-2 group-hover:translate-x-0">New Event</span>
+                <div class="w-14 h-14 bg-brand-600 text-white rounded-full flex items-center justify-center shadow-lg shadow-brand-600/40 hover:bg-brand-700 hover:scale-105 active:scale-95 transition-all">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                </div>
+            </a>
+        </div>
     {% else %}
-        <p>You need to <a href="{% url 'login' %}">login</a> to view this page.</p>
+        <div class="text-center py-20">
+            <h2 class="text-2xl font-bold text-slate-800 mb-4">Authentication Required</h2>
+            <p class="text-slate-500 mb-6">You need to log in to access the event dashboard.</p>
+            <a href="{% url 'login' %}" class="bg-brand-600 hover:bg-brand-700 text-white px-8 py-3 rounded-xl font-bold shadow-md transition-all">Login Now</a>
+        </div>
     {% endif %}
 {% endblock %}

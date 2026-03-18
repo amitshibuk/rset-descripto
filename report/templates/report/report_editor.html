@@ -1,44 +1,67 @@
 {% extends 'event/base.html' %}
 
-{% block title %}Report Gen{% endblock %}
+{% block title %}Report Generator{% endblock %}
 
 {% load static %}
 
-
 {% block content %}
 
-  <!-- CKEditor 5 CDN -->
-  <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+<!-- CKEditor 5 CDN -->
+<script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
 
-  <style>
-    /* Hidden iframe for PDF print */
-    #pdf-frame {
-      display: none;
-    }
-  </style>
-
-  <div class="flex flex-col items-center max-w-xl mx-auto p-4">
-  <!-- Prompt + Actions -->
+<style>
+  /* Hidden iframe for PDF print */
+  #pdf-frame {
+    display: none;
+  }
   
-  <!-- CKEditor Instance -->
-  <div class="bg-gray-200 p-4 rounded-lg shadow-md m-5">
-    <div id="editor-container">
-      <div id="editor">Generate your report...</div>
+  /* Fix CKEditor tailored styling */
+  .ck-editor__editable {
+    min-height: 400px;
+  }
+</style>
+
+<div class="max-w-5xl mx-auto py-8">
+
+    <div class="mb-8 text-center sm:text-left flex items-center gap-4">
+        <a href="{% url 'event_list' %}" class="w-10 h-10 bg-white border border-slate-200 text-slate-500 rounded-full flex items-center justify-center hover:bg-slate-50 hover:text-brand-600 transition-colors shadow-sm">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+        </a>
+        <div>
+            <h1 class="text-3xl font-extrabold text-slate-800">Generate Report</h1>
+            <p class="text-slate-500 mt-1 font-medium">Use AI to automatically draft, edit, and export event reports.</p>
+        </div>
     </div>
-  </div>
 
-  <div id="prompt-bar" class=" p-4 ">
-    <input type="text" id="prompt-input" class="w-full p-2 border border-gray-300 rounded mb-2" placeholder="Enter a prompt...">
-    <button onclick="generateText()" class="bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white p-4 rounded-lg text-white px-4 py-2 rounded">Generate ✨</button>
-    <button onclick="downloadPDF()" class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded">Download PDF</button>
-  </div>
+    <!-- Prompt Bar -->
+    <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 flex flex-col md:flex-row gap-4 items-end mb-6">
+        <div class="flex-1 w-full">
+            <label for="prompt-input" class="block text-sm font-semibold text-slate-700 mb-2 ml-1">AI Prompt</label>
+            <input type="text" id="prompt-input" class="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-brand-500/15 focus:border-brand-500 transition-all outline-none font-medium placeholder:text-slate-400" placeholder="E.g., Write a comprehensive post-event report for the annual tech summit...">
+        </div>
+        <div class="flex gap-3 w-full md:w-auto mt-4 md:mt-0">
+            <button onclick="generateText()" class="flex-1 md:flex-none bg-brand-600 hover:bg-brand-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-md shadow-brand-600/20 active:scale-95 transition-all text-center flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                Generate
+            </button>
+            <button onclick="downloadPDF()" class="flex-1 md:flex-none bg-slate-800 hover:bg-slate-900 text-white font-bold py-3.5 px-6 rounded-xl shadow-md active:scale-95 transition-all text-center flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                Export PDF
+            </button>
+        </div>
+    </div>
 
-  </div>
+    <!-- CKEditor Instance -->
+    <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+        <div id="editor">Start drafting your report here...</div>
+    </div>
   
-  <!-- Hidden iframe for print-to-PDF -->
-  <iframe id="pdf-frame"></iframe>
+</div>
 
-  <script>
+<!-- Hidden iframe for print-to-PDF -->
+<iframe id="pdf-frame"></iframe>
+
+<script>
     let editorInstance;
 
     // Initialize CKEditor
@@ -74,6 +97,9 @@
       const prompt = document.getElementById('prompt-input').value;
       if (!prompt) return alert("Please enter a prompt.");
 
+      // Show temporary loading state in editor
+      editorInstance.setData('<p><em>Generating report content, please wait...</em></p>');
+
       fetch('/report/chat/', {
         method: 'POST',
         headers: {
@@ -91,6 +117,7 @@
       .catch(err => {
         console.error('Generation error:', err);
         alert('Failed to generate text. Check console.');
+        editorInstance.setData('');
       });
     }
 
@@ -102,7 +129,6 @@
       
         const header = `
           <div id="pdf-header">
-            <img src="${window.location.origin}/static/report/logo.png" alt="Logo" style="height: 30px; vertical-align: middle; margin-right: 10px;">
             <span style="font-size: 14px; font-weight: bold;">| Event Report</span>
           </div>
         `;
@@ -172,6 +198,6 @@
           iframe.contentWindow.print();
         };
       }
-  </script>
+</script>
 
 {% endblock %}
